@@ -39,6 +39,12 @@ namespace Iot {  
         handler("Hoi", true);
      }
 
+
+    //% block="event $arg parameters $x $y $z"
+    //% draggableParameters="reporter"
+    export function onEventTest(arg: Commands, handler: (x: string, y: string,z:string) => void) {
+        handler("x","y","z")
+     }
   
     /**
      * A simple event taking a function handler
