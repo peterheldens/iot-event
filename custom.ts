@@ -45,8 +45,8 @@ namespace Iot {  
      */
     //% block="C2D command $cmd with flags $flags"
     //% draggableParameters="reporter"
-    export function onEvent(cmd:Commands, phandler: () => void, flags:number) {
-        control.onEvent(cmdEventID, cmd, phandler, flags);
+    export function onEvent(cmd:Commands, phandler: () => void) {
+        control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
             while(true) {
                 const cmd = inputstring; //get external input here
