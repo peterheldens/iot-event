@@ -18,7 +18,6 @@ enum Commands {
 namespace Iot {  
     const cmdEventID = 3100;
     let lastCmd = Commands.None;
-    export let command="";
     let onReceivedNumberHandler: (receivedNumber: number) => void;
    // let onReceivedCommandHandler: (cmd: string,p1:number, p2:number, p3:number) => void
 
@@ -31,7 +30,7 @@ namespace Iot {  
     }
 
     //% block="on command"
-    export function onReceivedCommand(command:Commands,handler:() => void) {
+    export function onReceivedCommand(command:number,handler:() => void) {
         control.onEvent(cmdEventID, command, handler);
         control.inBackground(() => {
             while(true) {
