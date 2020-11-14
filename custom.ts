@@ -17,24 +17,52 @@ enum Commands {
 //% color="#AA278D"
 namespace Iot {  
     const cmdEventID = 3100;
-    let lastCmd = Commands.None;
+    let lastCmd : Commands
+    let cmd : Commands
     let onReceivedNumberHandler: (receivedNumber: number) => void;
-   // let onReceivedCommandHandler: (cmd: string,p1:number, p2:number, p3:number) => void
+    let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
+    export let inputstring=Commands.None
 
+
+
+    /**
+     * The arguments on event handlers are variables by default, but they can
+     * also be special "reporter" blocks that can only be used inside the event
+     * handler itself, mimicking the behavior of locally scoped variables.
+     */
+    //% block="on some event $handlerStringArg $handlerBoolArg from $arg"
+    //% draggableParameters="reporter"
+    export function onEventWithHandlerReporterArgs(arg: number, handler: (handlerStringArg: string, handlerBoolArg: boolean) => void) {
+        handler("Hoi", true);
+     }
+
+  
     /**
      * A simple event taking a function handler
      */
-    //% block="on event"
-    export function onEvent(phandler: () => void) {
-        phandler();
+    //% block="on C2D command $cmd with parameter $p1"
+    export function onEvent(cmd:Commands, p1: number, phandler: ()=>void) {
+        control.onEvent(cmdEventID, cmd, phandler);
+        control.inBackground(() => {
+            while(true) {
+                const cmd = inputstring; //get external input here
+                if (cmd!= lastCmd) {
+                    lastCmd = cmd; 
+                    control.raiseEvent(cmdEventID, lastCmd);
+                    Iot.inputstring=Commands.None
+                }
+                basic.pause(50);
+            }
+        })
     }
 
+    
     //% block="on command"
     export function onReceivedCommand(command:number,handler:() => void) {
         control.onEvent(cmdEventID, command, handler);
         control.inBackground(() => {
             while(true) {
-                const cmd = Commands.None; //get external input here
+                const cmd = command; //get external input here
                 if (cmd != lastCmd) {
                     lastCmd = cmd; 
                     control.raiseEvent(cmdEventID, lastCmd);
