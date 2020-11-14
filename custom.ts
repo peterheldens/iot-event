@@ -15,10 +15,18 @@ enum Commands {
 }
 
 //% color="#AA278D"
-namespace IoT {  
+namespace language {  
     const cmdEventID = 3100;
     let lastCmd = Commands.None
     export let command=""
+
+    /**
+     * A simple event taking a function handler
+     */
+    //% block="on event"
+    export function onEvent(handler: () => void) {
+        handler();
+    }
 
     //% block="on command $cmd at |%p1|%p2|%p3"
     export function onCommand(cmd:Commands,  p1:number, p2:number, p3:number, handler: () => void) {
@@ -33,6 +41,5 @@ namespace IoT {  
                 basic.pause(50);
             }
         })
-        
     }
 }
