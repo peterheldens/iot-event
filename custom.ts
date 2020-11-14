@@ -20,14 +20,6 @@ namespace IoT {  
     let lastCmd = Commands.None
     export let command=""
 
-  /**
-     * Do something when C2D command is detected
-     * @param C2D Command
-     * @param C2D parameter1
-     * @param C2D parameter2
-     * @param C2D parameter3
-     * @param C2D handler
-     */
     //% block="on command|%cmd at |%p1|%p2|%p3"
     export function onCommand(cmd:Commands,  p1:number, p2:number, p3:number, handler: () => void) {
         control.onEvent(cmdEventID, cmd, handler);
