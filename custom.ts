@@ -17,20 +17,22 @@ enum Commands {
 //% color="#AA278D"
 namespace Iot {  
     const cmdEventID = 3100;
-    let lastCmd = Commands.None
-    export let command=""
+    let lastCmd = Commands.None;
+    export let command="";
+    let onReceivedNumberHandler: (receivedNumber: number) => void;
+   // let onReceivedCommandHandler: (cmd: string,p1:number, p2:number, p3:number) => void
 
     /**
      * A simple event taking a function handler
      */
     //% block="on event"
-    export function onEvent(handler: () => void) {
-        handler();
+    export function onEvent(phandler: () => void) {
+        phandler();
     }
 
     //% block="on command"
-    export function onCommand(cmd:Commands,  p1:number, p2:number, p3:number, handler: () => void) {
-        control.onEvent(cmdEventID, cmd, handler);
+    export function onReceivedCommand(command:Commands,handler:() => void) {
+        control.onEvent(cmdEventID, command, handler);
         control.inBackground(() => {
             while(true) {
                 const cmd = Commands.None; //get external input here
@@ -41,5 +43,8 @@ namespace Iot {  
                 basic.pause(50);
             }
         })
-    }
-}
+    }
+  }
+
+    //export function onReceivedCommandHandler(cmd: string,p1:number, p2:number, p3:number) {
+
