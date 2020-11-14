@@ -20,8 +20,11 @@ namespace Iot {  
     let lastCmd : Commands
     let cmd : Commands
     let onReceivedNumberHandler: (receivedNumber: number) => void;
-    let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
+    //let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
     export let inputstring=Commands.None
+    export let p1=0
+    export let p2=0
+    export let p3=0
 
 
 
@@ -40,9 +43,10 @@ namespace Iot {  
     /**
      * A simple event taking a function handler
      */
-    //% block="on C2D command $cmd with parameter $p1"
-    export function onEvent(cmd:Commands, p1: number, phandler: ()=>void) {
-        control.onEvent(cmdEventID, cmd, phandler);
+    //% block="on C2D command $cmd with parameter $handlerStringArg"
+    //% draggableParameters
+    export function onEvent(cmd:Commands, phandler: (handlerStringArg: string,)=>void) {
+     //   control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
             while(true) {
                 const cmd = inputstring; //get external input here
