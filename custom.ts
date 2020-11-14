@@ -1,8 +1,6 @@
 /**
  * Events are functions that take a function (lambda) as the last argument
  */
-//% color="#AA278D"
-
 enum Commands {
     //% block=None
     None = 0,
@@ -16,8 +14,8 @@ enum Commands {
     Neo = 4,
 }
 
+//% color="#AA278D"
 namespace IoT {  
-
     const cmdEventID = 3100;
     let lastCmd = Commands.None
     export let command=""
