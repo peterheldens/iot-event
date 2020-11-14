@@ -15,7 +15,7 @@ enum Commands {
 }
 
 //% color="#AA278D"
-namespace language {  
+namespace Iot {  
     const cmdEventID = 3100;
     let lastCmd = Commands.None
     export let command=""
@@ -28,7 +28,7 @@ namespace language {  
         handler();
     }
 
-    //% block="on command $cmd at |%p1|%p2|%p3"
+    //% block="on command"
     export function onCommand(cmd:Commands,  p1:number, p2:number, p3:number, handler: () => void) {
         control.onEvent(cmdEventID, cmd, handler);
         control.inBackground(() => {
