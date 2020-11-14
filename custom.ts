@@ -33,9 +33,9 @@ namespace Iot {  
      * also be special "reporter" blocks that can only be used inside the event
      * handler itself, mimicking the behavior of locally scoped variables.
      */
-    //% block="on some event $handlerStringArg $handlerBoolArg from $arg"
+    //% block="on some event $flags $handlerBoolArg from $arg"
     //% draggableParameters="reporter"
-    export function onEventWithHandlerReporterArgs(arg: number, handler: (handlerStringArg: string, handlerBoolArg: boolean) => void) {
+    export function onEventPeter(arg: number, handler: (handlerStringArg: string, handlerBoolArg: boolean) => void) {
         handler("Hoi", true);
      }
 
@@ -43,10 +43,10 @@ namespace Iot {  
     /**
      * A simple event taking a function handler
      */
-    //% block="on C2D command $cmd with parameter $handlerStringArg"
-    //% draggableParameters
-    export function onEvent(cmd:Commands, phandler: (handlerStringArg: string,)=>void) {
-     //   control.onEvent(cmdEventID, cmd, phandler);
+    //% block="C2D command $cmd with flags $flags"
+    //% draggableParameters="reporter"
+    export function onEvent(cmd:Commands, phandler: () => void, flags:number) {
+        control.onEvent(cmdEventID, cmd, phandler, flags);
         control.inBackground(() => {
             while(true) {
                 const cmd = inputstring; //get external input here
