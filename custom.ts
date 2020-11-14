@@ -18,7 +18,6 @@ enum Commands {
 
 namespace IoT {  
 
-
     const cmdEventID = 3100;
     let lastCmd = Commands.None
     export let command=""
@@ -31,8 +30,7 @@ namespace IoT {  
      * @param C2D parameter3
      * @param C2D handler
      */
-    //% block="on command|%cmd at |%p1|and|%p2and|%p3"
-    //% group="Thumbjoystick" xpin.defl=AnalogPin.C16 ypin.defl=AnalogPin.C17
+    //% block="on command|%cmd at |%p1|%p2|%p3"
     export function onCommand(cmd:Commands,  p1:number, p2:number, p3:number, handler: () => void) {
         control.onEvent(cmdEventID, cmd, handler);
         control.inBackground(() => {
