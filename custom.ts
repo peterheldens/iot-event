@@ -31,7 +31,8 @@ namespace Iot {  
     let initialized = false;
 
     //% block="on C2D received" blockGap=16
-    //% useLoc="radio.onDataPacketReceived" draggableParameters=reporter
+    // useLoc="radio.onDataPacketReceived" 
+    //% draggableParameters=reporter
     export function onReceivedC2D(cb: (name: string, value: number) => void) {
         init();
         onReceivedC2DHandler = cb;
