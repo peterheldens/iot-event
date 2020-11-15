@@ -30,9 +30,8 @@ namespace Iot {  
     let onReceivedC2DHandler: (name: string, value: number) => void;
     let initialized = false;
 
-
-    //% block="on c2d received" 
-    //% draggableParameters=reporter
+    //% block="on C2D received" blockGap=16
+    //% useLoc="radio.onDataPacketReceived" draggableParameters=reporter
     export function onReceivedC2D(cb: (name: string, value: number) => void) {
         init();
         onReceivedC2DHandler = cb;
@@ -48,12 +47,10 @@ namespace Iot {  
         return;
     }
 
-  function handleC2DReceived() {
-                    if (onReceivedC2DHandler)
-                        onReceivedC2DHandler(Iot.text, Iot.p1);
-  }
-
-
+      function handleC2DReceived() {
+         if (onReceivedC2DHandler)
+            onReceivedC2DHandler(Iot.text, Iot.p1);
+    }
 
     /**
      * The arguments on event handlers are variables by default, but they can
