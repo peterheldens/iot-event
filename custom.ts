@@ -71,7 +71,7 @@ namespace Iot {  
         //handler("Hoi", true);
         handler(p1, p2);
     }
-
+    
     //% block="on ander event $a1 $a2"
     //% draggableParameters
     export function onAnderEventPeter(a1:number, a2:number, handler: () => void) {
@@ -90,7 +90,7 @@ namespace Iot {  
      */
     //% block="C2D command $cmd"
     //% draggableParameters="reporter"
-    export function onEvent(cmd:Commands, phandler: () => void) {
+    export function onEvent(cmd:Commands, phandler:() => void) {
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
             while(true) {
