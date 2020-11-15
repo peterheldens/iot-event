@@ -22,9 +22,36 @@ namespace Iot {  
     let onReceivedNumberHandler: (receivedNumber: number) => void;
     //let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
     export let inputstring=Commands.None
+    export let text = "icon"
     export let p1=1
     export let p2=2
     export let p3=0
+
+    let onReceivedC2DHandler: (name: string, value: number) => void;
+    let initialized = false;
+
+
+    //% block="on c2d received" 
+    //% draggableParameters=reporter
+    export function onReceivedC2D(cb: (name: string, value: number) => void) {
+        init();
+        onReceivedC2DHandler = cb;
+    }
+
+    function init() {
+        if (initialized) return;
+        initialized = true;
+        onC2DReceived(handleC2DReceived);
+    }
+
+    function onC2DReceived(body: () =>void):void {
+        return;
+    }
+
+  function handleC2DReceived() {
+                    if (onReceivedC2DHandler)
+                        onReceivedC2DHandler(Iot.text, Iot.p1);
+  }
 
 
 
