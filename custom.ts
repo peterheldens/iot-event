@@ -20,7 +20,7 @@ namespace Iot {  
     let lastCmd : Commands
     let cmd : Commands
     let onReceivedNumberHandler: (receivedNumber: number) => void;
-    //let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
+    let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
     export let inputstring=Commands.None
     export let text = "icon"
     export let p1=1
@@ -45,7 +45,14 @@ namespace Iot {  
     }
 
     function onC2DReceived(body: () =>void):void {
-        return;
+            while(true) {
+                const cmd = inputstring; //get external input here
+                if (cmd!= lastCmd) {
+                    lastCmd = cmd; 
+                    //control.raiseEvent(cmdEventID, lastCmd);
+                }
+                basic.pause(50);
+            }
     }
 
       function handleC2DReceived() {
@@ -64,7 +71,13 @@ namespace Iot {  
         //handler("Hoi", true);
         handler(p1, p2);
     }
-
+    
+    //% block="on ander event $a1 $a2"
+    //% draggableParameters
+    export function onAnderEventPeter(a1:number, a2:number, handler: () => void) {
+        //handler("Hoi", true);
+        handler();
+    }
 
     //% block="event $arg parameters $x $y $z"
     //% draggableParameters="reporter"
@@ -75,9 +88,9 @@ namespace Iot {  
     /**
      * A simple event taking a function handler
      */
-    //% block="C2D command $cmd with flags $flags"
+    //% block="C2D command $cmd"
     //% draggableParameters="reporter"
-    export function onEvent(cmd:Commands, phandler: () => void) {
+    export function onEvent(cmd:Commands, phandler:() => void) {
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
             while(true) {
@@ -92,7 +105,7 @@ namespace Iot {  
         })
     }
 
-    
+     
     //% block="on command"
     export function onReceivedCommand(command:number,handler:() => void) {
         control.onEvent(cmdEventID, command, handler);
