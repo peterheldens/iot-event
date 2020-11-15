@@ -22,8 +22,8 @@ namespace Iot {  
     let onReceivedNumberHandler: (receivedNumber: number) => void;
     //let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
     export let inputstring=Commands.None
-    export let p1=0
-    export let p2=0
+    export let p1=1
+    export let p2=2
     export let p3=0
 
 
@@ -33,11 +33,12 @@ namespace Iot {  
      * also be special "reporter" blocks that can only be used inside the event
      * handler itself, mimicking the behavior of locally scoped variables.
      */
-    //% block="on some event $flags $handlerBoolArg from $arg"
-    //% draggableParameters="reporter"
-    export function onEventPeter(arg: number, handler: (handlerStringArg: string, handlerBoolArg: boolean) => void) {
-        handler("Hoi", true);
-     }
+    //% block="on some event $a1 $a2"
+    //% draggableParameters
+    export function onEventPeter(handler: (a1: number, a2: number) => void) {
+        //handler("Hoi", true);
+        handler(p1, p2);
+    }
 
 
     //% block="event $arg parameters $x $y $z"
