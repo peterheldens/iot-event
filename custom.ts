@@ -81,16 +81,28 @@ namespace Iot {  
     }
 
 
-    control.onEvent(cmdEventID, cmd, handelaar);
+    control.onEvent(cmdEventID, Commands.Servo, handelaar);
     
     function handelaar(x?: string, y?: string,z?:string) {
         handelaar("x","y","z")
     }
 
-    //% block="OnEvent Optie $arg parameters $x $y $z"
+    //% block="OnEvent PETER Optie $arg parameters $x $y $z"
     //% draggableParameters="reporter"
     export function onEventOptie(arg: Commands, handler: (x?: string, y?: string,z?:string) => void) {
-        handler("x","y","z")
+        handler("a","b","c")
+        control.onEvent(cmdEventID, cmd, handler);
+        control.inBackground(() => {
+            while(true) {
+                const cmd = inputstring; //get external input here
+                if (cmd!= lastCmd) {
+                    lastCmd = cmd; 
+                    control.raiseEvent(cmdEventID, lastCmd);
+                    Iot.inputstring=Commands.None
+                }
+                basic.pause(50);
+            }
+        })
      }
 
     //% block="handler $arg parameters $x $y $z"
