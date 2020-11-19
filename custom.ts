@@ -70,6 +70,7 @@ namespace Iot {  
     export function onEventPeter(handler: (a1: number, a2: number) => void) {
         //handler("Hoi", true);
         handler(p1, p2);
+        //control.onEvent(cmdEventID, cmd, handler);
     }
     
     //% block="on ander event $a1 $a2"
@@ -79,14 +80,27 @@ namespace Iot {  
         handler();
     }
 
-    //% block="event $arg parameters $x $y $z"
+
+    control.onEvent(cmdEventID, cmd, handelaar);
+    
+    function handelaar(x?: string, y?: string,z?:string) {
+        handelaar("x","y","z")
+    }
+
+    //% block="OnEvent Optie $arg parameters $x $y $z"
+    //% draggableParameters="reporter"
+    export function onEventOptie(arg: Commands, handler: (x?: string, y?: string,z?:string) => void) {
+        handler("x","y","z")
+     }
+
+    //% block="handler $arg parameters $x $y $z"
     //% draggableParameters="reporter"
     export function onEventTest(arg: Commands, handler: (x: string, y: string,z:string) => void) {
         handler("x","y","z")
      }
   
     /**
-     * A simple event taking a function handler
+     * A simple event taking a function handler PETER
      */
     //% block="C2D command $cmd"
     //% draggableParameters="reporter"
