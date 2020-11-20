@@ -24,6 +24,7 @@ namespace Iot {  
          * or 0 if this packet did not contain a number.
          */
         public receivedNumber: number;
+        public receivedCommand: number;
         /**
          * The string payload if a string was sent in this packet (via ``sendString()`` or ``sendValue()``)
          * or the empty string if this packet did not contain a string.
@@ -50,8 +51,8 @@ namespace Iot {  
 
     //% mutate=objectdestructuring
     //% mutateText=Packet
-    //% mutateDefaults="command; receivedNumber;receivedString:name,receivedNumber:value;receivedString"
-    //% block="on C2D radio received" blockGap=8
+    //% mutateDefaults="receivedCommand;receivedString:name,receivedNumber:value;receivedString"
+    //% block="onnn C2D radio received" blockGap=8
     export function onDataPacketReceived(cb: (packet: Packet) => void) {
             const packet = new Packet();
             packet.receivedNumber = p1;
