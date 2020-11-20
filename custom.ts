@@ -50,9 +50,9 @@ namespace Iot {  
 
     //% mutate=objectdestructuring
     //% mutateText=Packet
-    //% mutateDefaults="receivedNumber;receivedString:name,receivedNumber:value;receivedString"
+    //% mutateDefaults="command; receivedNumber;receivedString:name,receivedNumber:value;receivedString"
     //% block="on C2D radio received" blockGap=8
-    export function onDataPacketReceived(cmd:Commands, cb: (packet: Packet) => void) {
+    export function onDataPacketReceived(cb: (packet: Packet) => void) {
             const packet = new Packet();
             packet.receivedNumber = p1;
             cb(packet)
