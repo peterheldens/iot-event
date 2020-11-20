@@ -132,13 +132,13 @@ namespace Iot {  
         if (initialized) return;
         initialized = true;
      //   onReceivedC2DHandler = phandler;  
-        phandler(p1)
+        // phandler(p1)
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
             while(true) {
                 const cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
-                    //phandler(p1)
+                    phandler(p1)
                     lastCmd = cmd;      
                     control.raiseEvent(cmdEventID, lastCmd);
                     Iot.inputstring=Commands.None
