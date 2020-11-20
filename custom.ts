@@ -17,7 +17,9 @@ enum Commands {
 //% color="#AA278D"
 namespace Iot {  
     const cmdEventID = 3100;
+    const cmdEventID1 = 3101;
     let lastCmd : Commands
+    let lastCmd1 : Commands
     let cmd : Commands
     let onReceivedNumberHandler: (receivedNumber: number) => void;
     let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
@@ -49,7 +51,7 @@ namespace Iot {  
                 const cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
                     lastCmd = cmd; 
-                    //control.raiseEvent(cmdEventID, lastCmd);
+                    control.raiseEvent(cmdEventID, lastCmd);
                 }
                 basic.pause(50);
             }
@@ -87,24 +89,6 @@ namespace Iot {  
         handelaar("x","y","z")
     }
 
-    //% block="OnEvent PETER Optie $arg parameters $x $y $z"
-    //% draggableParameters="reporter"
-    export function onEventOptie(arg: Commands, handler: (x?: string, y?: string,z?:string) => void) {
-        handler("a","b","c")
-        control.onEvent(cmdEventID, cmd, handler);
-        control.inBackground(() => {
-            while(true) {
-                const cmd = inputstring; //get external input here
-                if (cmd!= lastCmd) {
-                    lastCmd = cmd; 
-                    control.raiseEvent(cmdEventID, lastCmd);
-                    Iot.inputstring=Commands.None
-                }
-                basic.pause(50);
-            }
-        })
-     }
-
     //% block="handler $arg parameters $x $y $z"
     //% draggableParameters="reporter"
     export function onEventTest(arg: Commands, handler: (x: string, y: string,z:string) => void) {
@@ -116,13 +100,16 @@ namespace Iot {  
      */
     //% block="C2D command $cmd"
     //% draggableParameters="reporter"
-    export function onEvent(cmd:Commands, phandler:() => void) {
+    export function onEvent(cmd:Commands, phandler:(p?:number) => void) {
+        //phandler(p1)
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
             while(true) {
                 const cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
+                    phandler(p1)
                     lastCmd = cmd; 
+                    
                     control.raiseEvent(cmdEventID, lastCmd);
                     Iot.inputstring=Commands.None
                 }
