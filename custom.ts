@@ -29,9 +29,9 @@ namespace Iot {  
     export let p2=2
     export let p3=0
 
-    let onReceivedC2DHandler: (name: string, value: number) => void;
+    let onReceivedC2DHandler: (value: number) => void;
     let initialized = false;
-
+/*
     //% block="on C2D received" blockGap=16
     // useLoc="radio.onDataPacketReceived" 
     //% draggableParameters=reporter
@@ -61,6 +61,7 @@ namespace Iot {  
          if (onReceivedC2DHandler)
             onReceivedC2DHandler(Iot.text, Iot.p1);
     }
+    */
 
     /**
      * The arguments on event handlers are variables by default, but they can
@@ -95,12 +96,27 @@ namespace Iot {  
         handler("x","y","z")
      }
   
+    function init1() {
+        if (initialized) return;
+        initialized = true;
+        onC2DRec(handleC2DReceived);
+    }
+
+      function handleC2DReceived() {
+         if (onReceivedC2DHandler)
+            onReceivedC2DHandler(Iot.p1);
+    }
+
     /**
      * A simple event taking a function handler PETER
      */
     //% block="C2D command $cmd"
     //% draggableParameters="reporter"
     export function onEvent(cmd:Commands, phandler:(p?:number) => void) {
+        init1();
+        onReceivedC2DHandler = phandler;
+
+        /*
         //phandler(p1)
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
@@ -116,7 +132,34 @@ namespace Iot {  
                 basic.pause(50);
             }
         })
+*/
     }
+
+
+    function onC2DRec(body: () =>void):void {
+            while(true) {
+                const cmd = inputstring; //get external input here
+                if (cmd!= lastCmd) {
+                    lastCmd = cmd; 
+                    control.raiseEvent(cmdEventID, lastCmd);
+                    Iot.inputstring=Commands.None
+                }
+                basic.pause(50);
+            }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
      
     //% block="on command"
