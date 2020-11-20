@@ -110,8 +110,6 @@ namespace Iot {  
     //% block="on C2D command $cmd"
     //% draggableParameters="reporter"
     export function onEvent(cmd:Commands, phandler:(p?:number) => void) {
-        if (initialized) return;
-        initialized = true;
         //phandler(p1)
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
@@ -131,7 +129,8 @@ namespace Iot {  
     //% block="on Experimental C2D command $cmd"
     //% draggableParameters="reporter"
     export function onExpEvent(cmd:Commands, phandler:(p?:number) => void) {
-     //   init1();
+        if (initialized) return;
+        initialized = true;
      //   onReceivedC2DHandler = phandler;  
         //phandler(p1)
         control.onEvent(cmdEventID, cmd, phandler);
