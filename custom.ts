@@ -107,16 +107,32 @@ namespace Iot {  
             onReceivedC2DHandler(Iot.p1);
     }
 
-    /**
-     * A simple event taking a function handler PETER
-     */
-    //% block="C2D command $cmd"
+    //% block="on C2D command $cmd"
     //% draggableParameters="reporter"
     export function onEvent(cmd:Commands, phandler:(p?:number) => void) {
-     //   init1();
-     //   onReceivedC2DHandler = phandler;
+        if (initialized) return;
+        initialized = true;
+        //phandler(p1)
+        control.onEvent(cmdEventID, cmd, phandler);
+        control.inBackground(() => {
+            while(true) {
+                const cmd = inputstring; //get external input here
+                if (cmd!= lastCmd) {
+                    phandler(p1)
+                    lastCmd = cmd;      
+                    control.raiseEvent(cmdEventID, lastCmd);
+                    Iot.inputstring=Commands.None
+                }
+                basic.pause(50);
+            }
+        })
+    }
 
-        
+    //% block="on Experimental C2D command $cmd"
+    //% draggableParameters="reporter"
+    export function onExpEvent(cmd:Commands, phandler:(p?:number) => void) {
+     //   init1();
+     //   onReceivedC2DHandler = phandler;  
         //phandler(p1)
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
@@ -124,15 +140,13 @@ namespace Iot {  
                 const cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
                     phandler(p1)
-                    lastCmd = cmd; 
-                    
+                    lastCmd = cmd;      
                     control.raiseEvent(cmdEventID, lastCmd);
                     Iot.inputstring=Commands.None
                 }
                 basic.pause(50);
             }
         })
-
     }
 
 
