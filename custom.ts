@@ -14,8 +14,50 @@ enum Commands {
     Neo = 4,
 }
 
+
+
 //% color="#AA278D"
 namespace Iot {  
+        export class Packet {
+        /**
+         * The number payload if a number was sent in this packet (via ``sendNumber()`` or ``sendValue()``)
+         * or 0 if this packet did not contain a number.
+         */
+        public receivedNumber: number;
+        /**
+         * The string payload if a string was sent in this packet (via ``sendString()`` or ``sendValue()``)
+         * or the empty string if this packet did not contain a string.
+         */
+        public receivedString: string;
+        /**
+         * The buffer payload if a buffer was sent in this packet
+         * or the empty buffer
+         */
+        public receivedBuffer: Buffer;
+        /**
+         * The system time of the sender of the packet at the time the packet was sent.
+         */
+        public time: number;
+        /**
+         * The serial number of the sender of the packet or 0 if the sender did not sent their serial number.
+         */
+        public serial: number;
+        /**
+         * The received signal strength indicator (RSSI) of the packet.
+         */
+        public signal: number;
+    }
+
+    //% mutate=objectdestructuring
+    //% mutateText=Packet
+    //% mutateDefaults="receivedNumber;receivedString:name,receivedNumber:value;receivedString"
+    //% block="on C2D radio received" blockGap=8
+    export function onDataPacketReceived(cb: (packet: Packet) => void) {
+            const packet = new Packet();
+            packet.receivedNumber = p1;
+            cb(packet)
+        }
+        
     const cmdEventID = 3100;
     const cmdEventID1 = 3101;
     let lastCmd : Commands
@@ -160,18 +202,6 @@ namespace Iot {  
                 basic.pause(50);
             }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
      
