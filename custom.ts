@@ -112,7 +112,7 @@ namespace Iot {  
      */
     //% block="C2D command $cmd"
     //% draggableParameters="reporter"
-    export function onEvent(cmd:Commands, phandler:(p?:number) => void) {
+    export function onEvent(cmd:Commands, phandler:(p:number) => void) {
         init1();
         onReceivedC2DHandler = phandler;
 
