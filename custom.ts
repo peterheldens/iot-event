@@ -112,11 +112,11 @@ namespace Iot {  
      */
     //% block="C2D command $cmd"
     //% draggableParameters="reporter"
-    export function onEvent(cmd:Commands, phandler:(p:number) => void) {
-        init1();
-        onReceivedC2DHandler = phandler;
+    export function onEvent(cmd:Commands, phandler:(p?:number) => void) {
+     //   init1();
+     //   onReceivedC2DHandler = phandler;
 
-        /*
+        
         //phandler(p1)
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
@@ -132,7 +132,7 @@ namespace Iot {  
                 basic.pause(50);
             }
         })
-*/
+
     }
 
 
