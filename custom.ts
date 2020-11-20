@@ -205,24 +205,5 @@ namespace Iot {  
                 basic.pause(50);
             }
     }
-
-
-     
-    //% block="on command"
-    export function onReceivedCommand(command:number,handler:() => void) {
-        control.onEvent(cmdEventID, command, handler);
-        control.inBackground(() => {
-            while(true) {
-                const cmd = command; //get external input here
-                if (cmd != lastCmd) {
-                    lastCmd = cmd; 
-                    control.raiseEvent(cmdEventID, lastCmd);
-                }
-                basic.pause(50);
-            }
-        })
-    }
-  }
-
-    //export function onReceivedCommandHandler(cmd: string,p1:number, p2:number, p3:number) {
+} 
 
