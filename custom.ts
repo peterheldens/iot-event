@@ -24,7 +24,7 @@ namespace Iot {  
          * or 0 if this packet did not contain a number.
          */
         public receivedNumber: number;
-        public cmd: Commands;
+       // public cmd: Commands;
         public par1: number;
         /**
          * The string payload if a string was sent in this packet (via ``sendString()`` or ``sendValue()``)
@@ -50,6 +50,7 @@ namespace Iot {  
         public signal: number;
     }
 
+/*
     //% mutate=objectdestructuring
     //% mutateText=Packet
     //% mutateDefaults="cmd:Commands,par1:number;receivedString:name,receivedNumber:value;receivedString"
@@ -60,11 +61,10 @@ namespace Iot {  
             packet.receivedNumber = p1;
             cb(packet)
         }
+*/
         
     const cmdEventID = 3100;
-    const cmdEventID1 = 3101;
     export let inputstring=Commands.None
-    //let onReceivedNumberHandler: (receivedNumber: number) => void;
     let onreceivedhandler: (p1?:number) => void
     export let text = "icon"
     export let p1=1
@@ -73,100 +73,8 @@ namespace Iot {  
     let cmd=Commands.None;
     let lastCmd=Commands.None;
 
-
     let onReceivedC2DHandler: (name: string, value: number) => void;
     let initialized = false;
-
-/*
-    //% block="new C2D received" blockGap=16
-    //% draggableParameters=reporter
-    export function onReceivedC2D(cb: (name: string, value: number) => void) {
-        init();
-        onReceivedC2DHandler = cb;
-    }
-
-    function init() {
-        if (initialized) return;
-        initialized = true;
-        onC2DReceived(handleC2DReceived);
-    }
-
-    function onC2DReceived(body: () =>void):void {
-            while(true) {
-                const cmd = inputstring; //get external input here
-                if (cmd!= lastCmd) {
-                    lastCmd = cmd; 
-                    control.raiseEvent(cmdEventID, lastCmd);
-                }
-                basic.pause(50);
-            }
-    }
-
-    function handleC2DReceived() {
-         if (onReceivedC2DHandler)
-            onReceivedC2DHandler(Iot.text, Iot.p1);
-    }
-
-*/
-
-    /**
-     * The arguments on event handlers are variables by default, but they can
-     * also be special "reporter" blocks that can only be used inside the event
-     * handler itself, mimicking the behavior of locally scoped variables.
-     */
-    //% block="on some event $a1 $a2"
-    //% draggableParameters
-    export function onEventPeter(handler: (a1: number, a2: number) => void) {
-        //handler("Hoi", true);
-        handler(p1, p2);
-        //control.onEvent(cmdEventID, cmd, handler);
-    }
-    
-    //% block="on ander event $a1 $a2"
-    //% draggableParameters
-    export function onAnderEventPeter(a1:number, a2:number, handler: () => void) {
-        //handler("Hoi", true);
-        handler();
-    }
-
-
-    control.onEvent(cmdEventID, Commands.Servo, handelaar);
-    
-    function handelaar(x?: string, y?: string,z?:string) {
-        handelaar("x","y","z")
-    }
-
-    //% block="handler $arg parameters $x $y $z"
-    //% draggableParameters="reporter"
-    export function onEventTest(arg: Commands, handler: (x: string, y: string,z:string) => void) {
-        handler("x","y","z")
-     }
-  
-/*
-      function handleC2DReceived() {
-         if (onReceivedC2DHandler)
-            onReceivedC2DHandler(Iot.p1);
-    }
-    */
-
-    //% block="on C2D command $cmd"
-    //% draggableParameters="reporter"
-    export function onEvent(cmd:Commands, phandler:(p?:number) => void) {
-        //phandler(p1)
-        control.onEvent(cmdEventID, cmd, phandler);
-        control.inBackground(() => {
-            while(true) {
-                cmd = inputstring; //get external input here
-                if (cmd!= lastCmd) {
-                    phandler(p1)
-                    lastCmd = cmd;      
-                    control.raiseEvent(cmdEventID, lastCmd);
-                    Iot.inputstring=Commands.None
-                }
-                basic.pause(50);
-            }
-        })
-    }
 
     control.onEvent(cmdEventID, cmd, onreceivedhandler);
 
@@ -202,7 +110,93 @@ namespace Iot {  
         onreceivedhandler = cb;
     }
 
-    //% block="on Experimental Old C2D command $cmd"
+/*
+    //% block="new C2D received" blockGap=16
+    //% draggableParameters=reporter
+    export function onReceivedC2D(cb: (name: string, value: number) => void) {
+        init();
+        onReceivedC2DHandler = cb;
+    }
+
+    function init() {
+        if (initialized) return;
+        initialized = true;
+        onC2DReceived(handleC2DReceived);
+    }
+
+    function onC2DReceived(body: () =>void):void {
+            while(true) {
+                const cmd = inputstring; //get external input here
+                if (cmd!= lastCmd) {
+                    lastCmd = cmd; 
+                    control.raiseEvent(cmdEventID, lastCmd);
+                }
+                basic.pause(50);
+            }
+    }
+
+    function handleC2DReceived() {
+         if (onReceivedC2DHandler)
+            onReceivedC2DHandler(Iot.text, Iot.p1);
+    }
+
+
+
+    //% block="on some event $a1 $a2"
+    //% draggableParameters
+    export function onEventPeter(handler: (a1: number, a2: number) => void) {
+        //handler("Hoi", true);
+        handler(p1, p2);
+        //control.onEvent(cmdEventID, cmd, handler);
+    }
+    
+    //% block="on ander event $a1 $a2"
+    //% draggableParameters
+    export function onAnderEventPeter(a1:number, a2:number, handler: () => void) {
+        //handler("Hoi", true);
+        handler();
+    }
+
+
+    control.onEvent(cmdEventID, Commands.Servo, handelaar);
+    
+    function handelaar(x?: string, y?: string,z?:string) {
+        handelaar("x","y","z")
+    }
+
+    //% block="handler $arg parameters $x $y $z"
+    //% draggableParameters="reporter"
+    export function onEventTest(arg: Commands, handler: (x: string, y: string,z:string) => void) {
+        handler("x","y","z")
+     }
+  
+
+      function handleC2DReceived() {
+         if (onReceivedC2DHandler)
+            onReceivedC2DHandler(Iot.p1);
+    }
+
+
+    //% block="on C2D command $cmd"
+    //% draggableParameters="reporter"
+    export function onEvent(cmd:Commands, phandler:(p?:number) => void) {
+        //phandler(p1)
+        control.onEvent(cmdEventID, cmd, phandler);
+        control.inBackground(() => {
+            while(true) {
+                cmd = inputstring; //get external input here
+                if (cmd!= lastCmd) {
+                    phandler(p1)
+                    lastCmd = cmd;      
+                    control.raiseEvent(cmdEventID, lastCmd);
+                    Iot.inputstring=Commands.None
+                }
+                basic.pause(50);
+            }
+        })
+    }
+
+        //% block="on Experimental Old C2D command $cmd"
     //% draggableParameters="reporter"
     export function onExpEventOld(cmd:Commands, phandler:(p?:number) => void) {
     //init()
@@ -240,5 +234,8 @@ namespace Iot {  
                 basic.pause(50);
             }
     }
+
+    */
+
 } 
 
