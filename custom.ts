@@ -15,7 +15,6 @@ enum Commands {
 }
 
 
-
 //% color="#AA278D"
 namespace Iot {  
         export class Packet {
@@ -63,24 +62,22 @@ namespace Iot {  
         }
 */
         
-    const cmdEventID = 3101;
-    export let inputstring=Commands.None
-    let onreceivedhandler: (p1?:number) => void
+    const cmdEventID = 1000;
+
     export let text = "icon"
     export let p1=1
     export let p2=2
     export let p3=3;
     let cmd=Commands.None;
     let lastCmd=Commands.None;
-    //let onReceivedC2DHandler: (name: string, value: number) => void;
     let initialized = false;
-
+    export let inputstring=Commands.None
+    let onreceivedhandler: (cmd?: number, p1?:number) => void
     
-
     function handleC2DReceived() {
         serial.writeLine("handleC2DReceived")
          if (onreceivedhandler)
-            onreceivedhandler(Iot.p1);
+            onreceivedhandler(cmd,Iot.p1);
     }
 
     function init() {
@@ -107,9 +104,9 @@ namespace Iot {  
     }
 
 
-    //% block="Experimental C2D command $cmd"
+    //% block="on C2D $cmd with parameter $p1 $p2 $p3"
     //% draggableParameters="reporter"
-    export function onExpEvent(cmd:Commands, cb:(p?:number) => void) {
+    export function onServo(cmd:Commands, cb:(p1?:number,p2?:number,p3?:number) => void) {
         serial.writeLine("onExpEvent")
         init()
         onreceivedhandler = cb;
