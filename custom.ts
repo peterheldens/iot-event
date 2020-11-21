@@ -168,16 +168,19 @@ namespace Iot {  
         })
     }
 
+    control.onEvent(cmdEventID, cmd, onreceivedhandler);
+
     function init() {
-        serial.writeValue("init", 0)
+        serial.writeString("Init")
         if (initialized) return;
-        serial.writeValue("initialize", 0)
+        serial.writeLine("Set Init to True")
         initialized = true;
+        serial.writeLine("register onC2DReceived handler")
         onC2DReceived(onreceivedhandler);
     }
 
     function onC2DReceived(body: () =>void):void {
-            serial.writeValue("onC2DReceivedBody", 0)
+            serial.writeLine("onC2DReceived Body")
             while(true) {
                 const cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
@@ -194,6 +197,7 @@ namespace Iot {  
     //% block="Experimental C2D command $cmd"
     //% draggableParameters="reporter"
     export function onExpEvent(cmd:Commands, cb:(p?:number) => void) {
+        serial.writeString("onExpEvent")
         init()
         onreceivedhandler = cb;
     }
