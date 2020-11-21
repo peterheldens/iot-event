@@ -50,7 +50,7 @@ namespace Iot {  
     const cmdEventID = 5000;
 
   //  export let text = "icon"
-    export let p1=1
+    export let p1=9
     export let p2=2
     export let p3=3;
     let cmd=Commands.None;
@@ -94,15 +94,21 @@ namespace Iot {  
 
     //% block="raise event $cmd" blockGap=8
     export function raiseEvent(cmd:Commands) {
-        handleC2DReceived();
+        //onreceivedhandler(p1);
         control.raiseEvent(cmdEventID, cmd);
+        //handleC2DReceived();       
+    }
+
+        //% block="raise cmd $cmd" blockGap=8
+    export function raiseCmd(cmd:Commands) {
+        onC2Dcmd(Commands.None,onreceivedhandler);
     }
 
     //% block="on C2D $cmd with parameter $v1"
     //% draggableParameters="reporter"
     export function onC2Dcmd(cmd:Commands, cb:(v1?:number) => void) {
+        //cb(Iot.p1);
         control.onEvent(cmdEventID, cmd, cb);
-        serial.writeLine("onExpEvent")
         init()
         onreceivedhandler = cb;
     }
