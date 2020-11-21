@@ -63,16 +63,15 @@ namespace Iot {  
         
     const cmdEventID = 3100;
     const cmdEventID1 = 3101;
-    let lastCmd : Commands
-    let lastCmd1 : Commands
-    let cmd : Commands
-    let onReceivedNumberHandler: (receivedNumber: number) => void;
-    let onreceivedhandler: (p1?:number) => void
     export let inputstring=Commands.None
+    //let onReceivedNumberHandler: (receivedNumber: number) => void;
+    let onreceivedhandler: (p1?:number) => void
     export let text = "icon"
     export let p1=1
     export let p2=2
-    export let p3=0
+    export let p3=3;
+    let cmd=Commands.None;
+    let lastCmd=Commands.None;
 
 
     let onReceivedC2DHandler: (name: string, value: number) => void;
@@ -157,7 +156,7 @@ namespace Iot {  
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
             while(true) {
-                const cmd = inputstring; //get external input here
+                cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
                     phandler(p1)
                     lastCmd = cmd;      
@@ -170,15 +169,20 @@ namespace Iot {  
     }
 
     function init() {
+        serial.writeValue("init", 0)
         if (initialized) return;
+        serial.writeValue("initialize", 0)
         initialized = true;
         onC2DReceived(onreceivedhandler);
     }
 
     function onC2DReceived(body: () =>void):void {
+            serial.writeValue("onC2DReceivedBody", 0)
             while(true) {
                 const cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
+                    serial.writeValue("cmd", cmd)
+                    serial.writeValue("lastcmd", lastCmd)
                     lastCmd = cmd; 
                     control.raiseEvent(cmdEventID, lastCmd);
                 }
@@ -187,7 +191,7 @@ namespace Iot {  
     }
 
 
-    //% block="on Experimental C2D command $cmd"
+    //% block="Experimental C2D command $cmd"
     //% draggableParameters="reporter"
     export function onExpEvent(cmd:Commands, cb:(p?:number) => void) {
         init()
