@@ -57,8 +57,9 @@ namespace Iot {  
     let currCmd=Commands.None
     let lastCmd=Commands.None;
     let initialized = false;
-    export let inputstring=Commands.None
-    let onreceivedhandler: (v1?:number) => void
+    export let inputstring=Commands.None;
+    let onreceivedhandler: (v1?:number) => void;
+    let oncmdhandler: (v1?: number, v2?:number, v3?:number) => void;
     
     function handleC2DReceived() {
         serial.writeLine("handleC2DReceived")
@@ -99,9 +100,30 @@ namespace Iot {  
         //handleC2DReceived();       
     }
 
-        //% block="raise cmd $cmd" blockGap=8
+    //% block="raise cmd $cmd" blockGap=8
     export function raiseCmd(cmd:Commands) {
-        onC2Dcmd(Commands.None,onreceivedhandler);
+        switch (cmd) {
+            case Commands.Servo : {
+                onServo(onreceivedhandler);
+                return;
+            }
+            case Commands.Neo : {
+                onNeo(onreceivedhandler);
+                return;
+            }
+        }
+    }
+
+    //% block="on Servo $cmd with parameter $v1"
+    //% draggableParameters="reporter"
+    export function onServo(handler: (v1?: number) => void) {
+       handler(p1);
+    }
+
+    //% block="on Neo $cmd with parameter $v1"
+    //% draggableParameters="reporter"
+    export function onNeo(handler: (v1?: number) => void) {
+       handler(p1);
     }
 
     //% block="on C2D $cmd with parameter $v1"
