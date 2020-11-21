@@ -67,7 +67,7 @@ namespace Iot {  
     let lastCmd1 : Commands
     let cmd : Commands
     let onReceivedNumberHandler: (receivedNumber: number) => void;
-    let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
+    let onreceivedhandler: (p1?:number) => void
     export let inputstring=Commands.None
     export let text = "icon"
     export let p1=1
@@ -103,7 +103,7 @@ namespace Iot {  
             }
     }
 
-      function handleC2DReceived() {
+    function handleC2DReceived() {
          if (onReceivedC2DHandler)
             onReceivedC2DHandler(Iot.text, Iot.p1);
     }
@@ -169,12 +169,36 @@ namespace Iot {  
         })
     }
 
+    function init() {
+        if (initialized) return;
+        initialized = true;
+        onC2DReceived(onreceivedhandler);
+    }
+
+    function onC2DReceived(body: () =>void):void {
+            while(true) {
+                const cmd = inputstring; //get external input here
+                if (cmd!= lastCmd) {
+                    lastCmd = cmd; 
+                    control.raiseEvent(cmdEventID, lastCmd);
+                }
+                basic.pause(50);
+            }
+    }
+
 
     //% block="on Experimental C2D command $cmd"
     //% draggableParameters="reporter"
-    export function onExpEvent(cmd:Commands, phandler:(p?:number) => void) {
-     //   init1()
-     //   onReceivedC2DHandler = phandler;  
+    export function onExpEvent(cmd:Commands, cb:(p?:number) => void) {
+        init()
+        onreceivedhandler = cb;
+    }
+
+    //% block="on Experimental Old C2D command $cmd"
+    //% draggableParameters="reporter"
+    export function onExpEventOld(cmd:Commands, phandler:(p?:number) => void) {
+    //init()
+    //   onReceivedC2DHandler = phandler;  
     //phandler(p1)
 
         serial.writeLine("init")
