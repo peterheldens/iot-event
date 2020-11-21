@@ -11,43 +11,28 @@ enum Commands {
     //% block=Servo
     Servo = 3,
     //% block=Neo
-    Neo = 4,
+    Neo = 4
 }
 
 
 //% color="#AA278D"
 namespace Iot {  
+    /*
         export class Packet {
-        /**
-         * The number payload if a number was sent in this packet (via ``sendNumber()`` or ``sendValue()``)
-         * or 0 if this packet did not contain a number.
-         */
+
         public receivedNumber: number;
        // public cmd: Commands;
         public par1: number;
-        /**
-         * The string payload if a string was sent in this packet (via ``sendString()`` or ``sendValue()``)
-         * or the empty string if this packet did not contain a string.
-         */
+
         public receivedString: string;
-        /**
-         * The buffer payload if a buffer was sent in this packet
-         * or the empty buffer
-         */
+
         public receivedBuffer: Buffer;
-        /**
-         * The system time of the sender of the packet at the time the packet was sent.
-         */
         public time: number;
-        /**
-         * The serial number of the sender of the packet or 0 if the sender did not sent their serial number.
-         */
+
         public serial: number;
-        /**
-         * The received signal strength indicator (RSSI) of the packet.
-         */
         public signal: number;
     }
+    */
 
 /*
     //% mutate=objectdestructuring
@@ -62,55 +47,64 @@ namespace Iot {  
         }
 */
         
-    const cmdEventID = 1000;
+    const cmdEventID = 5000;
 
   //  export let text = "icon"
     export let p1=1
     export let p2=2
     export let p3=3;
     let cmd=Commands.None;
+    let currCmd=Commands.None
     let lastCmd=Commands.None;
     let initialized = false;
     export let inputstring=Commands.None
-    let onreceivedhandler: (p1?:number,p2?:number,p3?:number) => void
+    let onreceivedhandler: (v1?:number) => void
     
     function handleC2DReceived() {
         serial.writeLine("handleC2DReceived")
-         if (onreceivedhandler)
-            onreceivedhandler(p1,p2,p3);
+        if (onreceivedhandler) {
+           serial.writeLine("p1="+p1)
+           onreceivedhandler(p1);
+        }
     }
 
     function init() {
-        serial.writeLine("Init")
         if (initialized) return;
-        serial.writeLine("Set Init to True")
-        initialized = true;
-        serial.writeLine("register onC2DReceived handler")
-        onC2DReceived(onreceivedhandler);
+        initialized = true;      
+        onC2DReceived(onreceivedhandler);
+
     }
 
     function onC2DReceived(body: () =>void):void {
             serial.writeLine("onC2DReceived Body")
-            while(true) {
-                cmd = inputstring; //get external input here
-                if (cmd!= lastCmd) {
-                    serial.writeValue("cmd", cmd)
-                    serial.writeValue("lastcmd", lastCmd)
-                    lastCmd = cmd; 
-                    control.raiseEvent(cmdEventID, cmd);
-                }
-                basic.pause(50);
-            }
+            /*
+            control.inBackground(() => {
+                while(true) {
+                    cmd = inputstring; //get external input here
+                    if (cmd!= lastCmd) {
+                        serial.writeValue("cmd", cmd)
+                        control.raiseEvent(cmdEventID, cmd);
+                        lastCmd = cmd; 
+                    }
+                    basic.pause(50);
+                }
+            })
+            */
     }
 
+    //% block="raise event $cmd" blockGap=8
+    export function raiseEvent(cmd:Commands) {
+        handleC2DReceived();
+        control.raiseEvent(cmdEventID, cmd);
+    }
 
-    //% block="on C2D $cmd with parameter $p1 $p2 $p3"
+    //% block="on C2D $cmd with parameter $v1"
     //% draggableParameters="reporter"
-    export function onC2Dcmd(cmd:Commands, cb:(p1?:number,p2?:number,p3?:number) => void) {
+    export function onC2Dcmd(cmd:Commands, cb:(v1?:number) => void) {
+        control.onEvent(cmdEventID, cmd, cb);
         serial.writeLine("onExpEvent")
         init()
         onreceivedhandler = cb;
-        control.onEvent(cmdEventID, cmd, handleC2DReceived);
     }
 
 /*
