@@ -64,7 +64,7 @@ namespace Iot {  
         
     const cmdEventID = 1000;
 
-    export let text = "icon"
+  //  export let text = "icon"
     export let p1=1
     export let p2=2
     export let p3=3;
@@ -72,12 +72,12 @@ namespace Iot {  
     let lastCmd=Commands.None;
     let initialized = false;
     export let inputstring=Commands.None
-    let onreceivedhandler: (cmd?: number, p1?:number) => void
+    let onreceivedhandler: (p1?:number,p2?:number,p3?:number) => void
     
     function handleC2DReceived() {
         serial.writeLine("handleC2DReceived")
          if (onreceivedhandler)
-            onreceivedhandler(cmd,Iot.p1);
+            onreceivedhandler(p1,p2,p3);
     }
 
     function init() {
@@ -106,7 +106,7 @@ namespace Iot {  
 
     //% block="on C2D $cmd with parameter $p1 $p2 $p3"
     //% draggableParameters="reporter"
-    export function onServo(cmd:Commands, cb:(p1?:number,p2?:number,p3?:number) => void) {
+    export function onC2Dcmd(cmd:Commands, cb:(p1?:number,p2?:number,p3?:number) => void) {
         serial.writeLine("onExpEvent")
         init()
         onreceivedhandler = cb;
