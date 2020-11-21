@@ -63,7 +63,7 @@ namespace Iot {  
         }
 */
         
-    const cmdEventID = 3100;
+    const cmdEventID = 3101;
     export let inputstring=Commands.None
     let onreceivedhandler: (p1?:number) => void
     export let text = "icon"
@@ -72,14 +72,19 @@ namespace Iot {  
     export let p3=3;
     let cmd=Commands.None;
     let lastCmd=Commands.None;
-
-    let onReceivedC2DHandler: (name: string, value: number) => void;
+    //let onReceivedC2DHandler: (name: string, value: number) => void;
     let initialized = false;
 
-    control.onEvent(cmdEventID, cmd, onreceivedhandler);
+    
+
+    function handleC2DReceived() {
+        serial.writeLine("handleC2DReceived")
+         if (onreceivedhandler)
+            onreceivedhandler(Iot.p1);
+    }
 
     function init() {
-        serial.writeString("Init")
+        serial.writeLine("Init")
         if (initialized) return;
         serial.writeLine("Set Init to True")
         initialized = true;
@@ -90,12 +95,12 @@ namespace Iot {  
     function onC2DReceived(body: () =>void):void {
             serial.writeLine("onC2DReceived Body")
             while(true) {
-                const cmd = inputstring; //get external input here
+                cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
                     serial.writeValue("cmd", cmd)
                     serial.writeValue("lastcmd", lastCmd)
                     lastCmd = cmd; 
-                    control.raiseEvent(cmdEventID, lastCmd);
+                    control.raiseEvent(cmdEventID, cmd);
                 }
                 basic.pause(50);
             }
@@ -105,9 +110,10 @@ namespace Iot {  
     //% block="Experimental C2D command $cmd"
     //% draggableParameters="reporter"
     export function onExpEvent(cmd:Commands, cb:(p?:number) => void) {
-        serial.writeString("onExpEvent")
+        serial.writeLine("onExpEvent")
         init()
         onreceivedhandler = cb;
+        control.onEvent(cmdEventID, cmd, handleC2DReceived);
     }
 
 /*
