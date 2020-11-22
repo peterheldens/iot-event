@@ -11,30 +11,45 @@ enum Commands {
     //% block=Servo
     Servo = 3,
     //% block=Neo
-    Neo = 4
+    Neo = 4,
 }
+
 
 
 //% color="#AA278D"
 namespace Iot {  
-    /*
         export class Packet {
-
+        /**
+         * The number payload if a number was sent in this packet (via ``sendNumber()`` or ``sendValue()``)
+         * or 0 if this packet did not contain a number.
+         */
         public receivedNumber: number;
-       // public cmd: Commands;
+        public cmd: Commands;
         public par1: number;
-
+        /**
+         * The string payload if a string was sent in this packet (via ``sendString()`` or ``sendValue()``)
+         * or the empty string if this packet did not contain a string.
+         */
         public receivedString: string;
-
+        /**
+         * The buffer payload if a buffer was sent in this packet
+         * or the empty buffer
+         */
         public receivedBuffer: Buffer;
+        /**
+         * The system time of the sender of the packet at the time the packet was sent.
+         */
         public time: number;
-
+        /**
+         * The serial number of the sender of the packet or 0 if the sender did not sent their serial number.
+         */
         public serial: number;
+        /**
+         * The received signal strength indicator (RSSI) of the packet.
+         */
         public signal: number;
     }
-    */
 
-/*
     //% mutate=objectdestructuring
     //% mutateText=Packet
     //% mutateDefaults="cmd:Commands,par1:number;receivedString:name,receivedNumber:value;receivedString"
@@ -45,98 +60,25 @@ namespace Iot {  
             packet.receivedNumber = p1;
             cb(packet)
         }
-*/
         
-    const cmdEventID = 5000;
-
-  //  export let text = "icon"
-    export let p1=9
+    const cmdEventID = 3100;
+    const cmdEventID1 = 3101;
+    let lastCmd : Commands
+    let lastCmd1 : Commands
+    let cmd : Commands
+    let onReceivedNumberHandler: (receivedNumber: number) => void;
+    let phandler: (cmd: string,p1:number, p2:number, p3:number) => void
+    export let inputstring=Commands.None
+    export let text = "icon"
+    export let p1=1
     export let p2=2
-    export let p3=3;
-    let cmd=Commands.None;
-    let currCmd=Commands.None
-    let lastCmd=Commands.None;
+    export let p3=0
+
+    let onReceivedC2DHandler: (value: number) => void;
     let initialized = false;
-    export let inputstring=Commands.None;
-    let onreceivedhandler: (v1?:number) => void;
-    let oncmdhandler: (v1?: number, v2?:number, v3?:number) => void;
-    
-    function handleC2DReceived() {
-        serial.writeLine("handleC2DReceived")
-        if (onreceivedhandler) {
-           serial.writeLine("p1="+p1)
-           onreceivedhandler(p1);
-        }
-    }
-
-    function init() {
-        if (initialized) return;
-        initialized = true;      
-        onC2DReceived(onreceivedhandler);
-
-    }
-
-    function onC2DReceived(body: () =>void):void {
-            serial.writeLine("onC2DReceived Body")
-            /*
-            control.inBackground(() => {
-                while(true) {
-                    cmd = inputstring; //get external input here
-                    if (cmd!= lastCmd) {
-                        serial.writeValue("cmd", cmd)
-                        control.raiseEvent(cmdEventID, cmd);
-                        lastCmd = cmd; 
-                    }
-                    basic.pause(50);
-                }
-            })
-            */
-    }
-
-    //% block="raise event $cmd" blockGap=8
-    export function raiseEvent(cmd:Commands) {
-        //onreceivedhandler(p1);
-        control.raiseEvent(cmdEventID, cmd);
-        //handleC2DReceived();       
-    }
-
-    //% block="raise cmd $cmd" blockGap=8
-    export function raiseCmd(cmd:Commands) {
-        switch (cmd) {
-            case Commands.Servo : {
-                onServo(onreceivedhandler);
-                return;
-            }
-            case Commands.Neo : {
-                onNeo(onreceivedhandler);
-                return;
-            }
-        }
-    }
-
-    //% block="on Servo $cmd with parameter $v1"
-    //% draggableParameters="reporter"
-    export function onServo(handler: (v1?: number) => void) {
-       handler(p1);
-    }
-
-    //% block="on Neo $cmd with parameter $v1"
-    //% draggableParameters="reporter"
-    export function onNeo(handler: (v1?: number) => void) {
-       handler(p1);
-    }
-
-    //% block="on C2D $cmd with parameter $v1"
-    //% draggableParameters="reporter"
-    export function onC2Dcmd(cmd:Commands, cb:(v1?:number) => void) {
-        //cb(Iot.p1);
-        control.onEvent(cmdEventID, cmd, cb);
-        init()
-        onreceivedhandler = cb;
-    }
-
 /*
-    //% block="new C2D received" blockGap=16
+    //% block="on C2D received" blockGap=16
+    // useLoc="radio.onDataPacketReceived" 
     //% draggableParameters=reporter
     export function onReceivedC2D(cb: (name: string, value: number) => void) {
         init();
@@ -160,13 +102,17 @@ namespace Iot {  
             }
     }
 
-    function handleC2DReceived() {
+      function handleC2DReceived() {
          if (onReceivedC2DHandler)
             onReceivedC2DHandler(Iot.text, Iot.p1);
     }
+    */
 
-
-
+    /**
+     * The arguments on event handlers are variables by default, but they can
+     * also be special "reporter" blocks that can only be used inside the event
+     * handler itself, mimicking the behavior of locally scoped variables.
+     */
     //% block="on some event $a1 $a2"
     //% draggableParameters
     export function onEventPeter(handler: (a1: number, a2: number) => void) {
@@ -195,12 +141,16 @@ namespace Iot {  
         handler("x","y","z")
      }
   
+    function init1() {
+        if (initialized) return;
+        initialized = true;
+        onC2DRec(handleC2DReceived);
+    }
 
       function handleC2DReceived() {
          if (onReceivedC2DHandler)
             onReceivedC2DHandler(Iot.p1);
     }
-
 
     //% block="on C2D command $cmd"
     //% draggableParameters="reporter"
@@ -209,7 +159,7 @@ namespace Iot {  
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
             while(true) {
-                cmd = inputstring; //get external input here
+                const cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
                     phandler(p1)
                     lastCmd = cmd;      
@@ -221,26 +171,22 @@ namespace Iot {  
         })
     }
 
-        //% block="on Experimental Old C2D command $cmd"
+    //% block="on Experimental C2D command $cmd"
     //% draggableParameters="reporter"
-    export function onExpEventOld(cmd:Commands, phandler:(p?:number) => void) {
-    //init()
-    //   onReceivedC2DHandler = phandler;  
-    //phandler(p1)
-
-        serial.writeLine("init")
+    export function onExpEvent(cmd:Commands, phandler:(p?:number) => void) {
+        if (initialized) return;
+        initialized = true;
+     //   onReceivedC2DHandler = phandler;  
+        // phandler(p1)
         control.onEvent(cmdEventID, cmd, phandler);
         control.inBackground(() => {
             while(true) {
-                //phandler(p1) - flip
                 const cmd = inputstring; //get external input here
                 if (cmd!= lastCmd) {
-                    inputstring=Commands.None
-                    serial.writeValue("cmd", cmd)
-                    lastCmd = cmd;      
-                    
                     phandler(p1)
-                    control.raiseEvent(cmdEventID, lastCmd);
+                    lastCmd = cmd;      
+                    control.raiseEvent(cmdEventID, lastCmd);
+                    Iot.inputstring=Commands.None
                 }
                 basic.pause(50);
             }
@@ -259,8 +205,5 @@ namespace Iot {  
                 basic.pause(50);
             }
     }
-
-    */
-
 } 
 
